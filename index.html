@@ -1,133 +1,531 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Central Gas - Suministro de Gas LP</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: #0D0D0D;
-      color: #E0E0E0;
-    }
-    .hero-bg {
-      background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?q=80&w=2070&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
-    .btn-primary {
-      background-color: #E63946;
-      color: white;
-      font-weight: bold;
-      padding: 12px 32px;
-      border-radius: 9999px;
-      transition: all 0.3s;
-    }
-    .btn-primary:hover {
-      background-color: #C1121F;
-      transform: scale(1.05);
-    }
-    .card {
-      background-color: #1A1A1A;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 2rem;
-      transition: all 0.3s;
-    }
-    .card:hover {
-      border-color: #E63946;
-      box-shadow: 0 0 20px rgba(230,57,70,0.15);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central Gas</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul:  #0D2B4E;
+    --cyan:  #00AEEF;
+    --verde: #00C48C;
+    --gris:  #8A9AB0;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body {
+    width:100%; height:100%;
+    overflow:hidden;
+    background: var(--azul);
+    font-family: 'DM Sans', sans-serif;
+    color: white;
+  }
+
+  body::before {
+    content:'';
+    position:fixed; inset:0; z-index:1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none; opacity:.4;
+  }
+
+  body::after {
+    content:'';
+    position:fixed; inset:0; z-index:0;
+    background-image:
+      linear-gradient(rgba(0,174,239,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,174,239,.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events:none;
+  }
+
+  .glow {
+    position:fixed; border-radius:50%;
+    pointer-events:none; z-index:0; filter: blur(120px);
+  }
+  .glow-1 {
+    width:600px; height:600px;
+    background: rgba(0,174,239,.07);
+    top:-100px; left:-100px;
+    animation: drift1 18s ease-in-out infinite alternate;
+  }
+  .glow-2 {
+    width:400px; height:400px;
+    background: rgba(0,196,140,.05);
+    bottom:-80px; right:-60px;
+    animation: drift2 14s ease-in-out infinite alternate;
+  }
+  @keyframes drift1 { 0%{transform:translate(0,0)} 100%{transform:translate(60px,40px)} }
+  @keyframes drift2 { 0%{transform:translate(0,0)} 100%{transform:translate(-40px,-30px)} }
+
+  .stage {
+    position:fixed; inset:0; z-index:2;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:0; margin-top:-50px;
+  }
+
+  /* ── LOGO ── */
+  .logo-wrap {
+    display:flex; align-items:center; gap:24px;
+    opacity:0; transform:translateY(20px);
+    animation: fadeUp .8s cubic-bezier(.16,1,.3,1) .2s forwards;
+  }
+
+  .wm-main {
+    font-family:'Rajdhani',sans-serif; font-weight:700;
+    font-size:clamp(48px,7vw,96px);
+    letter-spacing:4px; text-transform:uppercase;
+    line-height:1; color:white;
+  }
+  .wm-sub {
+    font-family:'Rajdhani',sans-serif; font-weight:300;
+    font-size:clamp(14px,2vw,26px);
+    letter-spacing:10px; text-transform:uppercase;
+    color:rgba(255,255,255,.35); margin-top:5px;
+  }
+
+  .divider {
+    width:1px; height:clamp(55px,8vw,100px);
+    background:rgba(255,255,255,.15); margin:0 4px;
+  }
+
+  /* ── PILARES ── */
+  .pilares {
+    display:flex; align-items:stretch; gap:0;
+    margin-top:clamp(44px,6vh,72px);
+    opacity:0; transform:translateY(16px);
+    animation: fadeUp .8s cubic-bezier(.16,1,.3,1) .55s forwards;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius:12px; overflow:hidden;
+  }
+
+  .pilar {
+    display:flex; flex-direction:column;
+    align-items:center; gap:7px;
+    padding:clamp(20px,3vw,36px) clamp(28px,5vw,64px);
+    cursor:default; position:relative;
+    transition: background .3s;
+  }
+  .pilar:hover { background:rgba(255,255,255,.04); }
+
+  .pilar + .pilar::before {
+    content:'';
+    position:absolute; left:0; top:20%; bottom:20%;
+    width:1px; background:rgba(255,255,255,.08);
+  }
+
+  .pilar-sigla {
+    font-family:'Rajdhani',sans-serif; font-weight:700;
+    font-size:clamp(30px,4vw,58px);
+    letter-spacing:3px; color:white; line-height:1;
+    transition: color .3s;
+  }
+  .pilar:hover .pilar-sigla { color:var(--cyan); }
+
+  .pilar-desc {
+    font-size:clamp(9px,1vw,13px); font-weight:300;
+    letter-spacing:2px; text-transform:uppercase;
+    color:rgba(255,255,255,.3); text-align:center;
+    transition: color .3s;
+  }
+  .pilar:hover .pilar-desc { color:rgba(255,255,255,.55); }
+
+  /* Ecosistema desc más pequeño para caber */
+  .pilar:last-child .pilar-desc {
+    font-size:clamp(9px,1vw,13px); letter-spacing:1.5px;
+  }
+
+  /* ── LÍNEA DECO ── */
+  .deco-line {
+    width:clamp(80px,10vw,160px); height:2px;
+    background:linear-gradient(90deg,var(--cyan),var(--verde));
+    margin-top:clamp(20px,3vh,36px);
+    opacity:0;
+    animation: fadeUp .8s cubic-bezier(.16,1,.3,1) .8s forwards;
+  }
+
+  /* ── SILUETAS ── */
+  .siluetas-track {
+    position:fixed; bottom:38px; left:0;
+    width:100%; height:clamp(55px,9vh,90px);
+    overflow:hidden; z-index:3;
+    mask-image: linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);
+  }
+
+  .siluetas-belt {
+    display:flex; align-items:flex-end;
+    gap:clamp(52px,8vw,110px);
+    position:absolute; bottom:0;
+    animation: desfile 32s linear infinite;
+  }
+  @keyframes desfile { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+  .silueta { opacity:.1; transition:opacity .3s; flex-shrink:0; }
+  .silueta:hover { opacity:.25; }
+
+  @keyframes vapor1 {
+    0%   { transform:translateY(0)    scaleX(1);   opacity:.6; }
+    100% { transform:translateY(-24px) scaleX(2);   opacity:0; }
+  }
+  @keyframes vapor2 {
+    0%   { transform:translateY(0)    scaleX(1);   opacity:.5; }
+    100% { transform:translateY(-20px) scaleX(2.2); opacity:0; }
+  }
+  @keyframes vapor3 {
+    0%   { transform:translateY(0)    scaleX(1);   opacity:.4; }
+    100% { transform:translateY(-18px) scaleX(1.8); opacity:0; }
+  }
+  .v1 { animation: vapor1 2.2s ease-out infinite; transform-origin: center bottom; }
+  .v2 { animation: vapor2 2.8s ease-out infinite .5s; transform-origin: center bottom; }
+  .v3 { animation: vapor3 2.4s ease-out infinite 1s; transform-origin: center bottom; }
+
+  /* ── CORREO ── */
+  .contacto {
+    position:fixed; bottom:clamp(12px,2vh,20px); left:50%;
+    transform:translateX(-50%); z-index:10;
+    font-size:clamp(10px,1vw,12px); font-weight:300;
+    letter-spacing:2.5px; color:rgba(255,255,255,.28);
+    text-decoration:none; transition:color .3s; white-space:nowrap;
+  }
+  .contacto:hover { color:var(--cyan); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes pulso  { 0%,100%{r:7;opacity:1} 50%{r:9;opacity:.65} }
+  @keyframes flujoA { 0%{stroke-dashoffset:40} 100%{stroke-dashoffset:0} }
+  @keyframes flujoB { 0%{stroke-dashoffset:30} 100%{stroke-dashoffset:0} }
+  .nc  { animation:pulso  2.4s ease-in-out infinite; }
+  .lfa { animation:flujoA 1.8s linear infinite; }
+  .lfb { animation:flujoB 2.2s linear infinite; }
+  @keyframes fadeUp { to{opacity:1;transform:translateY(0)} }
+</style>
 </head>
 <body>
-  <!-- Nav -->
-  <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-      <h1 class="text-2xl font-black text-white">CENTRAL <span class="text-red-500">GAS</span></h1>
-      <div class="hidden md:flex gap-8">
-        <a href="#servicios" class="text-gray-300 hover:text-white transition">Servicios</a>
-        <a href="#nosotros" class="text-gray-300 hover:text-white transition">Nosotros</a>
-        <a href="#contacto" class="text-gray-300 hover:text-white transition">Contacto</a>
-      </div>
-    </div>
-  </nav>
 
-  <!-- Hero -->
-  <section class="hero-bg min-h-screen flex items-center justify-center text-center px-6">
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<div class="stage">
+
+  <!-- LOGO -->
+  <div class="logo-wrap">
+    <svg viewBox="0 0 100 100"
+         style="width:clamp(90px,13vw,160px);height:clamp(90px,13vw,160px);overflow:visible;"
+         fill="none">
+      <line x1="50" y1="50" x2="90" y2="50" stroke="#00AEEF" stroke-width="2"   stroke-dasharray="7 4" class="lfa"/>
+      <line x1="50" y1="50" x2="72" y2="16" stroke="#00C48C" stroke-width="1.8" stroke-dasharray="6 4" class="lfb"/>
+      <line x1="50" y1="50" x2="72" y2="84" stroke="#00AEEF" stroke-width="1.8" stroke-dasharray="6 4" class="lfa"/>
+      <line x1="50" y1="50" x2="10" y2="50" stroke="#00C48C" stroke-width="1.8" stroke-dasharray="6 4" class="lfb"/>
+      <circle cx="90" cy="50" r="5.5" fill="white"   opacity=".15"/>
+      <circle cx="10" cy="50" r="4.5" fill="#00C48C" opacity=".5"/>
+      <circle cx="72" cy="16" r="4.5" fill="#00AEEF" opacity=".5"/>
+      <circle cx="72" cy="84" r="4.5" fill="#00AEEF" opacity=".5"/>
+      <circle cx="50" cy="50" r="14"  fill="rgba(0,174,239,.08)"/>
+      <circle cx="50" cy="50" r="13"  fill="#0D2B4E" stroke="rgba(0,174,239,.2)" stroke-width="1"/>
+      <circle cx="50" cy="50" r="7"   fill="#00AEEF" class="nc"/>
+      <circle cx="50" cy="50" r="3.5" fill="white"/>
+    </svg>
+
+    <div class="divider"></div>
+
     <div>
-      <p class="text-sm tracking-widest text-gray-400 uppercase mb-4">Suministro confiable</p>
-      <h2 class="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter leading-none mb-6">Gas LP<br>para tu hogar<br>y negocio</h2>
-      <p class="text-lg text-gray-300 max-w-xl mx-auto mb-8">Servicio de suministro de Gas LP con la mejor calidad, seguridad y precio en Aguascalientes.</p>
-      <a href="#contacto" class="btn-primary inline-block">Solicitar Servicio</a>
+      <div class="wm-main">Central Gas</div>
+      <div class="wm-sub">México</div>
     </div>
-  </section>
+  </div>
 
-  <!-- Servicios -->
-  <section id="servicios" class="py-24 px-6">
-    <div class="max-w-6xl mx-auto">
-      <h3 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tight text-center mb-16">Nuestros Servicios</h3>
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="card text-center">
-          <div class="text-4xl mb-4">&#9981;</div>
-          <h4 class="text-xl font-bold text-white mb-3">Gas LP Residencial</h4>
-          <p class="text-gray-400">Suministro seguro y puntual para tu hogar con los mejores precios del mercado.</p>
-        </div>
-        <div class="card text-center">
-          <div class="text-4xl mb-4">&#127981;</div>
-          <h4 class="text-xl font-bold text-white mb-3">Gas LP Comercial</h4>
-          <p class="text-gray-400">Soluciones de gas para restaurantes, hoteles y negocios con servicio continuo.</p>
-        </div>
-        <div class="card text-center">
-          <div class="text-4xl mb-4">&#128736;</div>
-          <h4 class="text-xl font-bold text-white mb-3">Mantenimiento</h4>
-          <p class="text-gray-400">Revision y mantenimiento de instalaciones de gas para garantizar tu seguridad.</p>
-        </div>
-      </div>
+  <!-- PILARES -->
+  <div class="pilares">
+    <div class="pilar">
+      <div class="pilar-sigla">GNC</div>
+      <div class="pilar-desc">Gas Natural Comprimido</div>
     </div>
-  </section>
+    <div class="pilar">
+      <div class="pilar-sigla">GNV</div>
+      <div class="pilar-desc">Gas Natural Vehicular</div>
+    </div>
+    <div class="pilar">
+      <div class="pilar-sigla">Ecosistema</div>
+      <div class="pilar-desc">Desarrollo · Sustitución · Conversión</div>
+    </div>
+  </div>
 
-  <!-- Nosotros -->
-  <section id="nosotros" class="py-24 px-6 bg-black/50">
-    <div class="max-w-4xl mx-auto text-center">
-      <h3 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tight mb-8">Nosotros</h3>
-      <p class="text-lg text-gray-300 leading-relaxed">Central Gas es una empresa comprometida con el suministro seguro y eficiente de Gas LP en Aguascalientes. Con anos de experiencia en el sector energetico, ofrecemos un servicio confiable, precios competitivos y atencion personalizada para hogares y negocios.</p>
-    </div>
-  </section>
+  <div class="deco-line"></div>
+</div>
 
-  <!-- Contacto -->
-  <section id="contacto" class="py-24 px-6">
-    <div class="max-w-4xl mx-auto text-center">
-      <h3 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tight mb-8">Contacto</h3>
-      <p class="text-gray-300 text-lg mb-8">Estamos para servirte. Contactanos para solicitar servicio o resolver tus dudas.</p>
-      <div class="grid md:grid-cols-2 gap-8 text-left">
-        <div class="card">
-          <h4 class="text-xl font-bold text-white mb-4">Informacion</h4>
-          <p class="text-gray-400 mb-2"><strong class="text-white">Email:</strong> contacto@centralgas.com.mx</p>
-          <p class="text-gray-400 mb-2"><strong class="text-white">Telefono:</strong> (449) 000-0000</p>
-          <p class="text-gray-400"><strong class="text-white">Ubicacion:</strong> Aguascalientes, Ags. Mexico</p>
-        </div>
-        <div class="card">
-          <h4 class="text-xl font-bold text-white mb-4">Horario</h4>
-          <p class="text-gray-400 mb-2"><strong class="text-white">Lunes - Viernes:</strong> 8:00 AM - 6:00 PM</p>
-          <p class="text-gray-400 mb-2"><strong class="text-white">Sabado:</strong> 8:00 AM - 2:00 PM</p>
-          <p class="text-gray-400"><strong class="text-white">Domingo:</strong> Cerrado</p>
-        </div>
-      </div>
-    </div>
-  </section>
+<!-- SILUETAS -->
+<div class="siluetas-track">
+  <div class="siluetas-belt">
 
-  <!-- Footer -->
-  <footer class="border-t border-gray-800 py-8 px-6">
-    <div class="max-w-6xl mx-auto text-center text-gray-500">
-      <p>&copy; 2026 Central Gas. Todos los derechos reservados.</p>
-      <p class="mt-2 text-sm">centralgas.com.mx</p>
-    </div>
-  </footer>
+    <!-- INDUSTRIA -->
+    <svg class="silueta" height="80" viewBox="0 0 120 80" fill="white">
+      <!-- Vapor chimenea 1 -->
+      <ellipse cx="34" cy="22" rx="5" ry="3" class="v1"/>
+      <!-- Vapor chimenea 2 -->
+      <ellipse cx="60" cy="18" rx="6" ry="3" class="v2"/>
+      <!-- Vapor chimenea 3 -->
+      <ellipse cx="85" cy="24" rx="4" ry="2.5" class="v3"/>
+      <!-- Chimeneas -->
+      <rect x="28" y="26" width="12" height="16" rx="1"/>
+      <rect x="54" y="22" width="12" height="20" rx="1"/>
+      <rect x="80" y="28" width="10" height="14" rx="1"/>
+      <!-- Edificio -->
+      <rect x="18" y="40" width="84" height="38" rx="2"/>
+      <!-- Ventanas -->
+      <rect x="26" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
+      <rect x="48" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
+      <rect x="70" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
+      <!-- Puerta -->
+      <rect x="50" y="62" width="20" height="16" rx="1" fill="#0D2B4E" opacity=".4"/>
+    </svg>
+
+    <!-- TRACTOCAMIÓN + MAT GNC -->
+    <svg class="silueta" height="70" viewBox="0 0 340 70" fill="white">
+      <!-- Cabina -->
+      <path d="M10 48 L10 20 Q10 8 28 8 L72 8 L72 54 L10 54 Q6 54 6 50 Q6 48 10 48Z"/>
+      <rect x="14" y="11" width="32" height="22" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <!-- Espejo -->
+      <rect x="4" y="16" width="5" height="8" rx="1" fill="white" opacity=".5"/>
+      <!-- Chasis plataforma -->
+      <rect x="72" y="46" width="258" height="6" rx="2"/>
+      <!-- Marcos de sujeción verticales -->
+      <line x1="110" y1="12" x2="110" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
+      <line x1="170" y1="12" x2="170" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
+      <line x1="230" y1="12" x2="230" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
+      <line x1="290" y1="12" x2="290" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
+      <!-- Marcos X de sujeción -->
+      <line x1="110" y1="12" x2="170" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <line x1="170" y1="12" x2="110" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <line x1="170" y1="12" x2="230" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <line x1="230" y1="12" x2="170" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <line x1="230" y1="12" x2="290" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <line x1="290" y1="12" x2="230" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <!-- Tubo 1 (superior) -->
+      <rect x="78" y="10" width="248" height="10" rx="5"/>
+      <ellipse cx="78"  cy="15" rx="5" ry="5" fill="white" opacity=".6"/>
+      <ellipse cx="326" cy="15" rx="5" ry="5" fill="white" opacity=".4"/>
+      <!-- Tubo 2 (medio) -->
+      <rect x="78" y="22" width="248" height="10" rx="5"/>
+      <ellipse cx="78"  cy="27" rx="5" ry="5" fill="white" opacity=".6"/>
+      <ellipse cx="326" cy="27" rx="5" ry="5" fill="white" opacity=".4"/>
+      <!-- Tubo 3 (inferior) -->
+      <rect x="78" y="34" width="248" height="10" rx="5"/>
+      <ellipse cx="78"  cy="39" rx="5" ry="5" fill="white" opacity=".6"/>
+      <ellipse cx="326" cy="39" rx="5" ry="5" fill="white" opacity=".4"/>
+      <!-- Sombra inferior tubos -->
+      <rect x="80" y="18" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
+      <rect x="80" y="30" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
+      <rect x="80" y="42" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
+      <!-- Ruedas tractora -->
+      <circle cx="22" cy="58" r="10" fill="white"/><circle cx="22" cy="58" r="4.5" fill="#0D2B4E"/>
+      <circle cx="52" cy="58" r="10" fill="white"/><circle cx="52" cy="58" r="4.5" fill="#0D2B4E"/>
+      <!-- Ruedas semirremolque -->
+      <circle cx="190" cy="58" r="9" fill="white"/><circle cx="190" cy="58" r="4" fill="#0D2B4E"/>
+      <circle cx="220" cy="58" r="9" fill="white"/><circle cx="220" cy="58" r="4" fill="#0D2B4E"/>
+      <circle cx="265" cy="58" r="9" fill="white"/><circle cx="265" cy="58" r="4" fill="#0D2B4E"/>
+      <circle cx="295" cy="58" r="9" fill="white"/><circle cx="295" cy="58" r="4" fill="#0D2B4E"/>
+      <!-- Label GNC -->
+      <text x="200" y="40" font-family="Rajdhani,sans-serif" font-size="0" fill="white" opacity="0">GNC</text>
+    </svg>
+
+    <!-- VAGONETA (combi/van tipo VW Transporter) -->
+    <svg class="silueta" height="56" viewBox="0 0 160 56" fill="white">
+      <!-- Cuerpo principal - forma de van cuadrada -->
+      <path d="M8 44 L8 18 Q8 8 18 8 L130 8 Q142 8 148 18 L152 32 L152 44 Z"/>
+      <!-- Parabrisas -->
+      <path d="M18 10 L18 26 L58 26 L58 10 Z" fill="#0D2B4E" opacity=".5"/>
+      <!-- Ventanas laterales -->
+      <rect x="64"  y="12" width="20" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="90"  y="12" width="20" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="116" y="12" width="14" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <!-- Ruedas -->
+      <circle cx="36"  cy="46" r="10" fill="white"/>
+      <circle cx="36"  cy="46" r="5"  fill="#0D2B4E"/>
+      <circle cx="122" cy="46" r="10" fill="white"/>
+      <circle cx="122" cy="46" r="5"  fill="#0D2B4E"/>
+      <!-- Faro delantero -->
+      <rect x="148" y="20" width="6" height="8" rx="2" fill="white" opacity=".4"/>
+    </svg>
+
+    <!-- TAXI (sedán con domo) -->
+    <svg class="silueta" height="52" viewBox="0 0 150 52" fill="white">
+      <!-- Domo taxi -->
+      <rect x="58" y="2" width="30" height="8" rx="3" fill="white" opacity=".5"/>
+      <!-- Techo y carrocería -->
+      <path d="M12 38 L22 16 Q30 8 46 8 L100 8 Q116 8 124 16 L138 38 Z"/>
+      <!-- Parabrisas delantero -->
+      <path d="M108 10 L122 28 L100 28 L100 10 Z" fill="#0D2B4E" opacity=".5"/>
+      <!-- Ventana trasera -->
+      <path d="M44 10 L44 28 L66 28 L58 10 Z" fill="#0D2B4E" opacity=".5"/>
+      <!-- Ventana central -->
+      <rect x="68" y="12" width="28" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <!-- Bumpers -->
+      <rect x="130" y="36" width="14" height="6" rx="2" fill="white" opacity=".6"/>
+      <rect x="6"   y="36" width="8"  height="6" rx="2" fill="white" opacity=".4"/>
+      <!-- Ruedas -->
+      <circle cx="38"  cy="44" r="8" fill="white"/>
+      <circle cx="38"  cy="44" r="4" fill="#0D2B4E"/>
+      <circle cx="112" cy="44" r="8" fill="white"/>
+      <circle cx="112" cy="44" r="4" fill="#0D2B4E"/>
+    </svg>
+
+    <!-- AUTOBÚS -->
+    <svg class="silueta" height="62" viewBox="0 0 200 62" fill="white">
+      <!-- Cuerpo principal -->
+      <rect x="8" y="8" width="184" height="42" rx="6"/>
+      <!-- Parabrisas delantero -->
+      <rect x="164" y="12" width="22" height="22" rx="3" fill="#0D2B4E" opacity=".5"/>
+      <!-- Parabrisas trasero -->
+      <rect x="14" y="12" width="20" height="22" rx="3" fill="#0D2B4E" opacity=".5"/>
+      <!-- Ventanas laterales -->
+      <rect x="40"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="64"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="88"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="112" y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="136" y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <!-- Puerta -->
+      <rect x="40" y="32" width="16" height="18" rx="1" fill="#0D2B4E" opacity=".4"/>
+      <!-- Línea decorativa lateral -->
+      <rect x="8" y="34" width="184" height="2" fill="#0D2B4E" opacity=".2"/>
+      <!-- Ruedas -->
+      <circle cx="42"  cy="52" r="10" fill="white"/><circle cx="42"  cy="52" r="5" fill="#0D2B4E"/>
+      <circle cx="158" cy="52" r="10" fill="white"/><circle cx="158" cy="52" r="5" fill="#0D2B4E"/>
+      <!-- Faro trasero -->
+      <rect x="8" y="18" width="5" height="10" rx="2" fill="white" opacity=".4"/>
+      <!-- Faro delantero -->
+      <rect x="187" y="18" width="5" height="10" rx="2" fill="white" opacity=".6"/>
+    </svg>
+
+    <!-- TRACTOCAMIÓN CAJA CERRADA -->
+    <svg class="silueta" height="66" viewBox="0 0 300 66" fill="white">
+      <rect x="75" y="8" width="216" height="40" rx="4"/>
+      <rect x="77" y="10" width="212" height="36" rx="3" fill="#0D2B4E" opacity=".28"/>
+      <path d="M10 44 L10 20 Q10 10 26 8 L73 8 L73 50 L10 50 Q6 50 6 46 Q6 44 10 44Z"/>
+      <rect x="14" y="12" width="30" height="20" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="4" y="16" width="5" height="9" rx="1" fill="white" opacity=".5"/>
+      <circle cx="22"  cy="54" r="10" fill="white"/><circle cx="22"  cy="54" r="4.5" fill="#0D2B4E"/>
+      <circle cx="52"  cy="54" r="10" fill="white"/><circle cx="52"  cy="54" r="4.5" fill="#0D2B4E"/>
+      <circle cx="170" cy="54" r="9"  fill="white"/><circle cx="170" cy="54" r="4"   fill="#0D2B4E"/>
+      <circle cx="210" cy="54" r="9"  fill="white"/><circle cx="210" cy="54" r="4"   fill="#0D2B4E"/>
+      <circle cx="255" cy="54" r="9"  fill="white"/><circle cx="255" cy="54" r="4"   fill="#0D2B4E"/>
+    </svg>
+
+    <!-- DUPLICADO -->
+    <svg class="silueta" height="80" viewBox="0 0 120 80" fill="white">
+      <ellipse cx="34" cy="22" rx="5" ry="3" class="v1"/>
+      <ellipse cx="60" cy="18" rx="6" ry="3" class="v2"/>
+      <ellipse cx="85" cy="24" rx="4" ry="2.5" class="v3"/>
+      <rect x="28" y="26" width="12" height="16" rx="1"/>
+      <rect x="54" y="22" width="12" height="20" rx="1"/>
+      <rect x="80" y="28" width="10" height="14" rx="1"/>
+      <rect x="18" y="40" width="84" height="38" rx="2"/>
+      <rect x="26" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
+      <rect x="48" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
+      <rect x="70" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
+      <rect x="50" y="62" width="20" height="16" rx="1" fill="#0D2B4E" opacity=".4"/>
+    </svg>
+
+    <svg class="silueta" height="70" viewBox="0 0 340 70" fill="white">
+      <path d="M10 48 L10 20 Q10 8 28 8 L72 8 L72 54 L10 54 Q6 54 6 50 Q6 48 10 48Z"/>
+      <rect x="14" y="11" width="32" height="22" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="4" y="16" width="5" height="8" rx="1" fill="white" opacity=".5"/>
+      <rect x="72" y="46" width="258" height="6" rx="2"/>
+      <line x1="110" y1="12" x2="110" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
+      <line x1="170" y1="12" x2="170" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
+      <line x1="230" y1="12" x2="230" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
+      <line x1="290" y1="12" x2="290" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
+      <line x1="110" y1="12" x2="170" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <line x1="170" y1="12" x2="110" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <line x1="170" y1="12" x2="230" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <line x1="230" y1="12" x2="170" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <line x1="230" y1="12" x2="290" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <line x1="290" y1="12" x2="230" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <rect x="78" y="10" width="248" height="10" rx="5"/>
+      <ellipse cx="78"  cy="15" rx="5" ry="5" fill="white" opacity=".6"/>
+      <ellipse cx="326" cy="15" rx="5" ry="5" fill="white" opacity=".4"/>
+      <rect x="78" y="22" width="248" height="10" rx="5"/>
+      <ellipse cx="78"  cy="27" rx="5" ry="5" fill="white" opacity=".6"/>
+      <ellipse cx="326" cy="27" rx="5" ry="5" fill="white" opacity=".4"/>
+      <rect x="78" y="34" width="248" height="10" rx="5"/>
+      <ellipse cx="78"  cy="39" rx="5" ry="5" fill="white" opacity=".6"/>
+      <ellipse cx="326" cy="39" rx="5" ry="5" fill="white" opacity=".4"/>
+      <rect x="80" y="18" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
+      <rect x="80" y="30" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
+      <rect x="80" y="42" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
+      <circle cx="22" cy="58" r="10" fill="white"/><circle cx="22" cy="58" r="4.5" fill="#0D2B4E"/>
+      <circle cx="52" cy="58" r="10" fill="white"/><circle cx="52" cy="58" r="4.5" fill="#0D2B4E"/>
+      <circle cx="190" cy="58" r="9" fill="white"/><circle cx="190" cy="58" r="4" fill="#0D2B4E"/>
+      <circle cx="220" cy="58" r="9" fill="white"/><circle cx="220" cy="58" r="4" fill="#0D2B4E"/>
+      <circle cx="265" cy="58" r="9" fill="white"/><circle cx="265" cy="58" r="4" fill="#0D2B4E"/>
+      <circle cx="295" cy="58" r="9" fill="white"/><circle cx="295" cy="58" r="4" fill="#0D2B4E"/>
+      <text x="200" y="40" font-family="Rajdhani,sans-serif" font-size="0" fill="white" opacity="0">GNC</text>
+    </svg>
+
+    <svg class="silueta" height="56" viewBox="0 0 160 56" fill="white">
+      <path d="M8 44 L8 18 Q8 8 18 8 L130 8 Q142 8 148 18 L152 32 L152 44 Z"/>
+      <path d="M18 10 L18 26 L58 26 L58 10 Z" fill="#0D2B4E" opacity=".5"/>
+      <rect x="64"  y="12" width="20" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="90"  y="12" width="20" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="116" y="12" width="14" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <circle cx="36"  cy="46" r="10" fill="white"/>
+      <circle cx="36"  cy="46" r="5"  fill="#0D2B4E"/>
+      <circle cx="122" cy="46" r="10" fill="white"/>
+      <circle cx="122" cy="46" r="5"  fill="#0D2B4E"/>
+      <rect x="148" y="20" width="6" height="8" rx="2" fill="white" opacity=".4"/>
+    </svg>
+
+    <svg class="silueta" height="52" viewBox="0 0 150 52" fill="white">
+      <rect x="58" y="2" width="30" height="8" rx="3" fill="white" opacity=".5"/>
+      <path d="M12 38 L22 16 Q30 8 46 8 L100 8 Q116 8 124 16 L138 38 Z"/>
+      <path d="M108 10 L122 28 L100 28 L100 10 Z" fill="#0D2B4E" opacity=".5"/>
+      <path d="M44 10 L44 28 L66 28 L58 10 Z" fill="#0D2B4E" opacity=".5"/>
+      <rect x="68" y="12" width="28" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="130" y="36" width="14" height="6" rx="2" fill="white" opacity=".6"/>
+      <rect x="6"   y="36" width="8"  height="6" rx="2" fill="white" opacity=".4"/>
+      <circle cx="38"  cy="44" r="8" fill="white"/>
+      <circle cx="38"  cy="44" r="4" fill="#0D2B4E"/>
+      <circle cx="112" cy="44" r="8" fill="white"/>
+      <circle cx="112" cy="44" r="4" fill="#0D2B4E"/>
+    </svg>
+
+    <svg class="silueta" height="62" viewBox="0 0 200 62" fill="white">
+      <rect x="8" y="8" width="184" height="42" rx="6"/>
+      <rect x="164" y="12" width="22" height="22" rx="3" fill="#0D2B4E" opacity=".5"/>
+      <rect x="14" y="12" width="20" height="22" rx="3" fill="#0D2B4E" opacity=".5"/>
+      <rect x="40"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="64"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="88"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="112" y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="136" y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="40" y="32" width="16" height="18" rx="1" fill="#0D2B4E" opacity=".4"/>
+      <rect x="8" y="34" width="184" height="2" fill="#0D2B4E" opacity=".2"/>
+      <circle cx="42"  cy="52" r="10" fill="white"/><circle cx="42"  cy="52" r="5" fill="#0D2B4E"/>
+      <circle cx="158" cy="52" r="10" fill="white"/><circle cx="158" cy="52" r="5" fill="#0D2B4E"/>
+      <rect x="8" y="18" width="5" height="10" rx="2" fill="white" opacity=".4"/>
+      <rect x="187" y="18" width="5" height="10" rx="2" fill="white" opacity=".6"/>
+    </svg>
+
+    <svg class="silueta" height="66" viewBox="0 0 300 66" fill="white">
+      <rect x="75" y="8" width="216" height="40" rx="4"/>
+      <rect x="77" y="10" width="212" height="36" rx="3" fill="#0D2B4E" opacity=".28"/>
+      <path d="M10 44 L10 20 Q10 10 26 8 L73 8 L73 50 L10 50 Q6 50 6 46 Q6 44 10 44Z"/>
+      <rect x="14" y="12" width="30" height="20" rx="2" fill="#0D2B4E" opacity=".5"/>
+      <rect x="4" y="16" width="5" height="9" rx="1" fill="white" opacity=".5"/>
+      <circle cx="22"  cy="54" r="10" fill="white"/><circle cx="22"  cy="54" r="4.5" fill="#0D2B4E"/>
+      <circle cx="52"  cy="54" r="10" fill="white"/><circle cx="52"  cy="54" r="4.5" fill="#0D2B4E"/>
+      <circle cx="170" cy="54" r="9"  fill="white"/><circle cx="170" cy="54" r="4"   fill="#0D2B4E"/>
+      <circle cx="210" cy="54" r="9"  fill="white"/><circle cx="210" cy="54" r="4"   fill="#0D2B4E"/>
+      <circle cx="255" cy="54" r="9"  fill="white"/><circle cx="255" cy="54" r="4"   fill="#0D2B4E"/>
+    </svg>
+
+  </div></div>
+
+<!-- CORREO -->
+<a class="contacto" href="mailto:contacto@centralgas.com.mx">
+  contacto@centralgas.com.mx
+</a>
+
 </body>
 </html>
