@@ -4,407 +4,325 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Central Gas</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --azul:  #0D2B4E;
-    --cyan:  #00AEEF;
-    --verde: #00C48C;
-    --gris:  #8A9AB0;
+    --azul: #0D2B4E; --cyan: #00AEEF; --verde: #00C48C;
   }
-
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-  html, body {
-    width:100%; height:100%;
+  html { height:100%; }
+
+  body {
+    height:100%; min-height:100vh;
+    background:var(--azul);
+    font-family:'DM Sans',sans-serif;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
     overflow:hidden;
-    background: var(--azul);
-    font-family: 'DM Sans', sans-serif;
-    color: white;
   }
 
+  /* Grain */
   body::before {
-    content:'';
-    position:fixed; inset:0; z-index:1;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events:none; opacity:.4;
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+    opacity:.5;
   }
-
+  /* Grid */
   body::after {
-    content:'';
-    position:fixed; inset:0; z-index:0;
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
     background-image:
-      linear-gradient(rgba(0,174,239,.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,174,239,.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events:none;
+      linear-gradient(rgba(0,174,239,.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,174,239,.04) 1px,transparent 1px);
+    background-size:60px 60px;
   }
 
-  .glow {
-    position:fixed; border-radius:50%;
-    pointer-events:none; z-index:0; filter: blur(120px);
-  }
-  .glow-1 {
-    width:600px; height:600px;
-    background: rgba(0,174,239,.07);
-    top:-100px; left:-100px;
-    animation: drift1 18s ease-in-out infinite alternate;
-  }
-  .glow-2 {
-    width:400px; height:400px;
-    background: rgba(0,196,140,.05);
-    bottom:-80px; right:-60px;
-    animation: drift2 14s ease-in-out infinite alternate;
-  }
-  @keyframes drift1 { 0%{transform:translate(0,0)} 100%{transform:translate(60px,40px)} }
-  @keyframes drift2 { 0%{transform:translate(0,0)} 100%{transform:translate(-40px,-30px)} }
+  /* Glows */
+  .g1,.g2 { position:fixed; border-radius:50%; pointer-events:none; z-index:0; filter:blur(130px); }
+  .g1 { width:500px; height:500px; background:rgba(0,174,239,.07); top:-80px; left:-80px; animation:d1 18s ease-in-out infinite alternate; }
+  .g2 { width:380px; height:380px; background:rgba(0,196,140,.05); bottom:-60px; right:-60px; animation:d2 14s ease-in-out infinite alternate; }
+  @keyframes d1 { to { transform:translate(50px,35px); } }
+  @keyframes d2 { to { transform:translate(-35px,-25px); } }
 
-  .stage {
-    position:fixed; inset:0; z-index:2;
+  /* ── CONTENIDO CENTRAL ── */
+  .center {
+    position:relative; z-index:2;
     display:flex; flex-direction:column;
-    align-items:center; justify-content:center;
-    gap:0; margin-top:-50px;
+    align-items:center; gap:clamp(28px,4vh,48px);
+    padding-bottom:clamp(80px,12vh,110px); /* espacio para vehículos */
   }
 
   /* ── LOGO ── */
-  .logo-wrap {
-    display:flex; align-items:center; gap:24px;
-    opacity:0; transform:translateY(20px);
-    animation: fadeUp .8s cubic-bezier(.16,1,.3,1) .2s forwards;
+  .logo {
+    display:flex; align-items:center;
+    gap:clamp(16px,2.5vw,28px);
+    opacity:0; transform:translateY(18px);
+    animation:up .8s cubic-bezier(.16,1,.3,1) .15s forwards;
   }
-
-  .wm-main {
+  .div { width:1px; height:clamp(44px,6vw,80px); background:rgba(255,255,255,.14); }
+  .wm-a {
     font-family:'Rajdhani',sans-serif; font-weight:700;
-    font-size:clamp(48px,7vw,96px);
-    letter-spacing:4px; text-transform:uppercase;
-    line-height:1; color:white;
+    font-size:clamp(36px,6vw,80px);
+    letter-spacing:3px; text-transform:uppercase; line-height:1;
   }
-  .wm-sub {
+  .wm-b {
     font-family:'Rajdhani',sans-serif; font-weight:300;
-    font-size:clamp(14px,2vw,26px);
+    font-size:clamp(11px,1.4vw,18px);
     letter-spacing:10px; text-transform:uppercase;
     color:rgba(255,255,255,.35); margin-top:5px;
   }
 
-  .divider {
-    width:1px; height:clamp(55px,8vw,100px);
-    background:rgba(255,255,255,.15); margin:0 4px;
-  }
-
   /* ── PILARES ── */
   .pilares {
-    display:flex; align-items:stretch; gap:0;
-    margin-top:clamp(44px,6vh,72px);
-    opacity:0; transform:translateY(16px);
-    animation: fadeUp .8s cubic-bezier(.16,1,.3,1) .55s forwards;
-    border: 1px solid rgba(255,255,255,.07);
+    display:flex; align-items:stretch;
+    border:1px solid rgba(255,255,255,.08);
     border-radius:12px; overflow:hidden;
+    opacity:0; transform:translateY(14px);
+    animation:up .8s cubic-bezier(.16,1,.3,1) .4s forwards;
   }
-
   .pilar {
-    display:flex; flex-direction:column;
-    align-items:center; gap:7px;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
     padding:clamp(20px,3vw,36px) clamp(28px,5vw,64px);
-    cursor:default; position:relative;
-    transition: background .3s;
+    cursor:default; position:relative; transition:background .3s;
   }
   .pilar:hover { background:rgba(255,255,255,.04); }
-
-  .pilar + .pilar::before {
-    content:'';
-    position:absolute; left:0; top:20%; bottom:20%;
+  .pilar+.pilar::before {
+    content:''; position:absolute; left:0; top:18%; bottom:18%;
     width:1px; background:rgba(255,255,255,.08);
   }
-
-  .pilar-sigla {
+  .ps {
     font-family:'Rajdhani',sans-serif; font-weight:700;
-    font-size:clamp(30px,4vw,58px);
-    letter-spacing:3px; color:white; line-height:1;
-    transition: color .3s;
+    font-size:clamp(30px,4vw,58px); letter-spacing:3px;
+    line-height:1; transition:color .3s;
   }
-  .pilar:hover .pilar-sigla { color:var(--cyan); }
-
-  .pilar-desc {
+  .pilar:hover .ps { color:var(--cyan); }
+  .pd {
     font-size:clamp(9px,1vw,13px); font-weight:300;
     letter-spacing:2px; text-transform:uppercase;
     color:rgba(255,255,255,.3); text-align:center;
-    transition: color .3s;
+    transition:color .3s;
   }
-  .pilar:hover .pilar-desc { color:rgba(255,255,255,.55); }
+  .pilar:hover .pd { color:rgba(255,255,255,.55); }
 
-  /* Ecosistema desc más pequeño para caber */
-  .pilar:last-child .pilar-desc {
-    font-size:clamp(9px,1vw,13px); letter-spacing:1.5px;
-  }
-
-  /* ── LÍNEA DECO ── */
-  .deco-line {
-    width:clamp(80px,10vw,160px); height:2px;
+  /* ── DECO LINE ── */
+  .deco {
+    width:clamp(80px,10vw,150px); height:2px;
     background:linear-gradient(90deg,var(--cyan),var(--verde));
-    margin-top:clamp(20px,3vh,36px);
-    opacity:0;
-    animation: fadeUp .8s cubic-bezier(.16,1,.3,1) .8s forwards;
+    border-radius:2px;
+    opacity:0; animation:up .8s cubic-bezier(.16,1,.3,1) .65s forwards;
   }
 
-  /* ── SILUETAS ── */
-  .siluetas-track {
-    position:fixed; bottom:38px; left:0;
-    width:100%; height:clamp(55px,9vh,90px);
+  /* ── VEHÍCULOS ── */
+  .belt-wrap {
+    position:fixed; bottom:0; left:0; width:100%;
+    height:clamp(58px,10vh,96px);
     overflow:hidden; z-index:3;
-    mask-image: linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);
-    -webkit-mask-image: linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);
+    mask-image:linear-gradient(90deg,transparent 0%,black 7%,black 93%,transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,black 7%,black 93%,transparent 100%);
   }
-
-  .siluetas-belt {
+  .belt {
     display:flex; align-items:flex-end;
-    gap:clamp(52px,8vw,110px);
+    gap:clamp(40px,6vw,90px);
     position:absolute; bottom:0;
-    animation: desfile 32s linear infinite;
+    animation:parade 32s linear infinite;
+    white-space:nowrap;
   }
-  @keyframes desfile { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  @keyframes parade { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  .s { opacity:.1; transition:opacity .3s; flex-shrink:0; }
+  .s:hover { opacity:.25; }
 
-  .silueta { opacity:.1; transition:opacity .3s; flex-shrink:0; }
-  .silueta:hover { opacity:.25; }
+  /* Vapor */
+  @keyframes vap1 { 0%{transform:translateY(0) scaleX(1);opacity:.55} 100%{transform:translateY(-22px) scaleX(2);opacity:0} }
+  @keyframes vap2 { 0%{transform:translateY(0) scaleX(1);opacity:.45} 100%{transform:translateY(-18px) scaleX(2.2);opacity:0} }
+  @keyframes vap3 { 0%{transform:translateY(0) scaleX(1);opacity:.4}  100%{transform:translateY(-16px) scaleX(1.8);opacity:0} }
+  .v1 { animation:vap1 2.2s ease-out infinite; transform-origin:center bottom; }
+  .v2 { animation:vap2 2.8s ease-out .5s infinite; transform-origin:center bottom; }
+  .v3 { animation:vap3 2.4s ease-out 1s  infinite; transform-origin:center bottom; }
 
-  @keyframes vapor1 {
-    0%   { transform:translateY(0)    scaleX(1);   opacity:.6; }
-    100% { transform:translateY(-24px) scaleX(2);   opacity:0; }
-  }
-  @keyframes vapor2 {
-    0%   { transform:translateY(0)    scaleX(1);   opacity:.5; }
-    100% { transform:translateY(-20px) scaleX(2.2); opacity:0; }
-  }
-  @keyframes vapor3 {
-    0%   { transform:translateY(0)    scaleX(1);   opacity:.4; }
-    100% { transform:translateY(-18px) scaleX(1.8); opacity:0; }
-  }
-  .v1 { animation: vapor1 2.2s ease-out infinite; transform-origin: center bottom; }
-  .v2 { animation: vapor2 2.8s ease-out infinite .5s; transform-origin: center bottom; }
-  .v3 { animation: vapor3 2.4s ease-out infinite 1s; transform-origin: center bottom; }
 
   /* ── CORREO ── */
-  .contacto {
-    position:fixed; bottom:clamp(12px,2vh,20px); left:50%;
-    transform:translateX(-50%); z-index:10;
+  .mail {
     font-size:clamp(10px,1vw,12px); font-weight:300;
-    letter-spacing:2.5px; color:rgba(255,255,255,.28);
-    text-decoration:none; transition:color .3s; white-space:nowrap;
+    letter-spacing:2.5px; color:rgba(255,255,255,.4);
+    text-decoration:none; white-space:nowrap;
+    margin-top:clamp(10px,1.5vh,20px);
+    transition:color .3s; z-index:5; position:relative;
   }
-  .contacto:hover { color:var(--cyan); }
+  .mail:hover { color:var(--cyan); }
 
-  /* ── ANIMATIONS ── */
-  @keyframes pulso  { 0%,100%{r:7;opacity:1} 50%{r:9;opacity:.65} }
-  @keyframes flujoA { 0%{stroke-dashoffset:40} 100%{stroke-dashoffset:0} }
-  @keyframes flujoB { 0%{stroke-dashoffset:30} 100%{stroke-dashoffset:0} }
-  .nc  { animation:pulso  2.4s ease-in-out infinite; }
-  .lfa { animation:flujoA 1.8s linear infinite; }
-  .lfb { animation:flujoB 2.2s linear infinite; }
-  @keyframes fadeUp { to{opacity:1;transform:translateY(0)} }
+  /* ── NODO ANIMATIONS ── */
+  @keyframes pulse { 0%,100%{r:7;opacity:1} 50%{r:9;opacity:.6} }
+  @keyframes fa { 0%{stroke-dashoffset:40} 100%{stroke-dashoffset:0} }
+  @keyframes fb { 0%{stroke-dashoffset:30} 100%{stroke-dashoffset:0} }
+  .nc  { animation:pulse 2.4s ease-in-out infinite; }
+  .la  { animation:fa 1.8s linear infinite; }
+  .lb  { animation:fb 2.2s linear infinite; }
+  @keyframes up { to{opacity:1;transform:translateY(0)} }
+
+  /* ══ RESPONSIVE MOBILE ══ */
+  @media (max-width:640px) {
+    .logo { flex-direction:column; align-items:center; gap:12px; }
+    .div  { display:none; }
+    .wm-a { font-size:clamp(34px,10vw,48px); text-align:center; white-space:nowrap; }
+    .wm-b { font-size:clamp(10px,3vw,13px); text-align:center; letter-spacing:7px; }
+
+    .pilares { flex-direction:column; width:90%; max-width:320px; }
+    .pilar { flex-direction:row; align-items:center; justify-content:flex-start;
+             gap:12px; padding:14px 18px; text-align:left; }
+    .pilar+.pilar::before { left:0;top:0;bottom:auto;width:100%;height:1px; }
+    .ps { font-size:clamp(20px,7vw,28px); min-width:72px; }
+    .pd { font-size:clamp(8px,2.5vw,10px); text-align:left; letter-spacing:1.2px; }
+
+    .belt-wrap { height:clamp(42px,7vh,62px); }
+    .belt { gap:28px; animation-duration:24s; }
+    .s { transform:scale(.5); transform-origin:bottom left; }  }
 </style>
 </head>
 <body>
 
-<div class="glow glow-1"></div>
-<div class="glow glow-2"></div>
+<div class="g1"></div>
+<div class="g2"></div>
 
-<div class="stage">
+<div class="center">
 
   <!-- LOGO -->
-  <div class="logo-wrap">
-    <svg viewBox="0 0 100 100"
-         style="width:clamp(90px,13vw,160px);height:clamp(90px,13vw,160px);overflow:visible;"
-         fill="none">
-      <line x1="50" y1="50" x2="90" y2="50" stroke="#00AEEF" stroke-width="2"   stroke-dasharray="7 4" class="lfa"/>
-      <line x1="50" y1="50" x2="72" y2="16" stroke="#00C48C" stroke-width="1.8" stroke-dasharray="6 4" class="lfb"/>
-      <line x1="50" y1="50" x2="72" y2="84" stroke="#00AEEF" stroke-width="1.8" stroke-dasharray="6 4" class="lfa"/>
-      <line x1="50" y1="50" x2="10" y2="50" stroke="#00C48C" stroke-width="1.8" stroke-dasharray="6 4" class="lfb"/>
+  <div class="logo">
+    <svg viewBox="0 0 100 100" style="width:clamp(70px,10vw,120px);height:clamp(70px,10vw,120px);overflow:visible;" fill="none">
+      <line x1="50" y1="50" x2="90" y2="50" stroke="#00AEEF" stroke-width="2"   stroke-dasharray="7 4" class="la"/>
+      <line x1="50" y1="50" x2="72" y2="16" stroke="#00C48C" stroke-width="1.8" stroke-dasharray="6 4" class="lb"/>
+      <line x1="50" y1="50" x2="72" y2="84" stroke="#00AEEF" stroke-width="1.8" stroke-dasharray="6 4" class="la"/>
+      <line x1="50" y1="50" x2="10" y2="50" stroke="#00C48C" stroke-width="1.8" stroke-dasharray="6 4" class="lb"/>
       <circle cx="90" cy="50" r="5.5" fill="white"   opacity=".15"/>
       <circle cx="10" cy="50" r="4.5" fill="#00C48C" opacity=".5"/>
       <circle cx="72" cy="16" r="4.5" fill="#00AEEF" opacity=".5"/>
       <circle cx="72" cy="84" r="4.5" fill="#00AEEF" opacity=".5"/>
       <circle cx="50" cy="50" r="14"  fill="rgba(0,174,239,.08)"/>
-      <circle cx="50" cy="50" r="13"  fill="#0D2B4E" stroke="rgba(0,174,239,.2)" stroke-width="1"/>
+      <circle cx="50" cy="50" r="13"  fill="#0D2B4E" stroke="rgba(0,174,239,.18)" stroke-width="1"/>
       <circle cx="50" cy="50" r="7"   fill="#00AEEF" class="nc"/>
       <circle cx="50" cy="50" r="3.5" fill="white"/>
     </svg>
-
-    <div class="divider"></div>
-
+    <div class="div"></div>
     <div>
-      <div class="wm-main">Central Gas</div>
-      <div class="wm-sub">México</div>
+      <div class="wm-a">Central Gas</div>
+      <div class="wm-b">México</div>
     </div>
   </div>
 
   <!-- PILARES -->
   <div class="pilares">
-    <div class="pilar">
-      <div class="pilar-sigla">GNC</div>
-      <div class="pilar-desc">Gas Natural Comprimido</div>
-    </div>
-    <div class="pilar">
-      <div class="pilar-sigla">GNV</div>
-      <div class="pilar-desc">Gas Natural Vehicular</div>
-    </div>
-    <div class="pilar">
-      <div class="pilar-sigla">Ecosistema</div>
-      <div class="pilar-desc">Desarrollo · Sustitución · Conversión</div>
-    </div>
+    <div class="pilar"><div class="ps">GNC</div><div class="pd">Gas Natural Comprimido</div></div>
+    <div class="pilar"><div class="ps">GNV</div><div class="pd">Gas Natural Vehicular</div></div>
+    <div class="pilar"><div class="ps">Ecosistema</div><div class="pd">Desarrollo · Sustitución · Conversión</div></div>
   </div>
 
-  <div class="deco-line"></div>
+  <div class="deco"></div>
+  <a class="mail" href="mailto:contacto@centralgas.com.mx">contacto@centralgas.com.mx</a>
 </div>
 
-<!-- SILUETAS -->
-<div class="siluetas-track">
-  <div class="siluetas-belt">
+<!-- VEHÍCULOS -->
+<div class="belt-wrap">
+  <div class="belt">
 
     <!-- INDUSTRIA -->
-    <svg class="silueta" height="80" viewBox="0 0 120 80" fill="white">
-      <!-- Vapor chimenea 1 -->
+    <svg class="s" height="78" viewBox="0 0 120 78" fill="white">
       <ellipse cx="34" cy="22" rx="5" ry="3" class="v1"/>
-      <!-- Vapor chimenea 2 -->
       <ellipse cx="60" cy="18" rx="6" ry="3" class="v2"/>
-      <!-- Vapor chimenea 3 -->
       <ellipse cx="85" cy="24" rx="4" ry="2.5" class="v3"/>
-      <!-- Chimeneas -->
-      <rect x="28" y="26" width="12" height="16" rx="1"/>
-      <rect x="54" y="22" width="12" height="20" rx="1"/>
-      <rect x="80" y="28" width="10" height="14" rx="1"/>
-      <!-- Edificio -->
-      <rect x="18" y="40" width="84" height="38" rx="2"/>
-      <!-- Ventanas -->
+      <rect x="28" y="25" width="12" height="16" rx="1"/>
+      <rect x="54" y="21" width="12" height="20" rx="1"/>
+      <rect x="80" y="27" width="10" height="14" rx="1"/>
+      <rect x="18" y="40" width="84" height="36" rx="2"/>
       <rect x="26" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
       <rect x="48" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
       <rect x="70" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
-      <!-- Puerta -->
-      <rect x="50" y="62" width="20" height="16" rx="1" fill="#0D2B4E" opacity=".4"/>
+      <rect x="50" y="60" width="20" height="16" rx="1" fill="#0D2B4E" opacity=".4"/>
     </svg>
 
-    <!-- TRACTOCAMIÓN + MAT GNC -->
-    <svg class="silueta" height="70" viewBox="0 0 340 70" fill="white">
-      <!-- Cabina -->
-      <path d="M10 48 L10 20 Q10 8 28 8 L72 8 L72 54 L10 54 Q6 54 6 50 Q6 48 10 48Z"/>
+    <!-- MAT TUBOS GNC -->
+    <svg class="s" height="68" viewBox="0 0 340 68" fill="white">
+      <path d="M10 46 L10 18 Q10 8 28 8 L72 8 L72 52 L10 52 Q6 52 6 48 Q6 46 10 46Z"/>
       <rect x="14" y="11" width="32" height="22" rx="2" fill="#0D2B4E" opacity=".5"/>
-      <!-- Espejo -->
       <rect x="4" y="16" width="5" height="8" rx="1" fill="white" opacity=".5"/>
-      <!-- Chasis plataforma -->
-      <rect x="72" y="46" width="258" height="6" rx="2"/>
-      <!-- Marcos de sujeción verticales -->
-      <line x1="110" y1="12" x2="110" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
-      <line x1="170" y1="12" x2="170" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
-      <line x1="230" y1="12" x2="230" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
-      <line x1="290" y1="12" x2="290" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
-      <!-- Marcos X de sujeción -->
-      <line x1="110" y1="12" x2="170" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <line x1="170" y1="12" x2="110" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <line x1="170" y1="12" x2="230" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <line x1="230" y1="12" x2="170" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <line x1="230" y1="12" x2="290" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <line x1="290" y1="12" x2="230" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <!-- Tubo 1 (superior) -->
+      <rect x="72" y="44" width="258" height="6" rx="2"/>
+      <line x1="110" y1="12" x2="110" y2="44" stroke="white" stroke-width="2" opacity=".5"/>
+      <line x1="170" y1="12" x2="170" y2="44" stroke="white" stroke-width="2" opacity=".5"/>
+      <line x1="230" y1="12" x2="230" y2="44" stroke="white" stroke-width="2" opacity=".5"/>
+      <line x1="290" y1="12" x2="290" y2="44" stroke="white" stroke-width="2" opacity=".5"/>
+      <line x1="110" y1="12" x2="170" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
+      <line x1="170" y1="12" x2="110" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
+      <line x1="170" y1="12" x2="230" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
+      <line x1="230" y1="12" x2="170" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
+      <line x1="230" y1="12" x2="290" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
+      <line x1="290" y1="12" x2="230" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
       <rect x="78" y="10" width="248" height="10" rx="5"/>
       <ellipse cx="78"  cy="15" rx="5" ry="5" fill="white" opacity=".6"/>
-      <ellipse cx="326" cy="15" rx="5" ry="5" fill="white" opacity=".4"/>
-      <!-- Tubo 2 (medio) -->
+      <ellipse cx="326" cy="15" rx="5" ry="5" fill="white" opacity=".35"/>
       <rect x="78" y="22" width="248" height="10" rx="5"/>
       <ellipse cx="78"  cy="27" rx="5" ry="5" fill="white" opacity=".6"/>
-      <ellipse cx="326" cy="27" rx="5" ry="5" fill="white" opacity=".4"/>
-      <!-- Tubo 3 (inferior) -->
+      <ellipse cx="326" cy="27" rx="5" ry="5" fill="white" opacity=".35"/>
       <rect x="78" y="34" width="248" height="10" rx="5"/>
       <ellipse cx="78"  cy="39" rx="5" ry="5" fill="white" opacity=".6"/>
-      <ellipse cx="326" cy="39" rx="5" ry="5" fill="white" opacity=".4"/>
-      <!-- Sombra inferior tubos -->
-      <rect x="80" y="18" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
-      <rect x="80" y="30" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
-      <rect x="80" y="42" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
-      <!-- Ruedas tractora -->
-      <circle cx="22" cy="58" r="10" fill="white"/><circle cx="22" cy="58" r="4.5" fill="#0D2B4E"/>
-      <circle cx="52" cy="58" r="10" fill="white"/><circle cx="52" cy="58" r="4.5" fill="#0D2B4E"/>
-      <!-- Ruedas semirremolque -->
-      <circle cx="190" cy="58" r="9" fill="white"/><circle cx="190" cy="58" r="4" fill="#0D2B4E"/>
-      <circle cx="220" cy="58" r="9" fill="white"/><circle cx="220" cy="58" r="4" fill="#0D2B4E"/>
-      <circle cx="265" cy="58" r="9" fill="white"/><circle cx="265" cy="58" r="4" fill="#0D2B4E"/>
-      <circle cx="295" cy="58" r="9" fill="white"/><circle cx="295" cy="58" r="4" fill="#0D2B4E"/>
-      <!-- Label GNC -->
-      <text x="200" y="40" font-family="Rajdhani,sans-serif" font-size="0" fill="white" opacity="0">GNC</text>
+      <ellipse cx="326" cy="39" rx="5" ry="5" fill="white" opacity=".35"/>
+      <circle cx="22"  cy="56" r="10" fill="white"/><circle cx="22"  cy="56" r="4.5" fill="#0D2B4E"/>
+      <circle cx="52"  cy="56" r="10" fill="white"/><circle cx="52"  cy="56" r="4.5" fill="#0D2B4E"/>
+      <circle cx="190" cy="56" r="9"  fill="white"/><circle cx="190" cy="56" r="4"   fill="#0D2B4E"/>
+      <circle cx="220" cy="56" r="9"  fill="white"/><circle cx="220" cy="56" r="4"   fill="#0D2B4E"/>
+      <circle cx="265" cy="56" r="9"  fill="white"/><circle cx="265" cy="56" r="4"   fill="#0D2B4E"/>
+      <circle cx="295" cy="56" r="9"  fill="white"/><circle cx="295" cy="56" r="4"   fill="#0D2B4E"/>
     </svg>
 
-    <!-- VAGONETA (combi/van tipo VW Transporter) -->
-    <svg class="silueta" height="56" viewBox="0 0 160 56" fill="white">
-      <!-- Cuerpo principal - forma de van cuadrada -->
-      <path d="M8 44 L8 18 Q8 8 18 8 L130 8 Q142 8 148 18 L152 32 L152 44 Z"/>
-      <!-- Parabrisas -->
+    <!-- VAGONETA -->
+    <svg class="s" height="54" viewBox="0 0 160 54" fill="white">
+      <path d="M8 42 L8 18 Q8 8 18 8 L130 8 Q142 8 148 18 L152 32 L152 42 Z"/>
       <path d="M18 10 L18 26 L58 26 L58 10 Z" fill="#0D2B4E" opacity=".5"/>
-      <!-- Ventanas laterales -->
       <rect x="64"  y="12" width="20" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="90"  y="12" width="20" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="116" y="12" width="14" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
-      <!-- Ruedas -->
-      <circle cx="36"  cy="46" r="10" fill="white"/>
-      <circle cx="36"  cy="46" r="5"  fill="#0D2B4E"/>
-      <circle cx="122" cy="46" r="10" fill="white"/>
-      <circle cx="122" cy="46" r="5"  fill="#0D2B4E"/>
-      <!-- Faro delantero -->
+      <circle cx="36"  cy="46" r="10" fill="white"/><circle cx="36"  cy="46" r="5"  fill="#0D2B4E"/>
+      <circle cx="122" cy="46" r="10" fill="white"/><circle cx="122" cy="46" r="5"  fill="#0D2B4E"/>
       <rect x="148" y="20" width="6" height="8" rx="2" fill="white" opacity=".4"/>
     </svg>
 
-    <!-- TAXI (sedán con domo) -->
-    <svg class="silueta" height="52" viewBox="0 0 150 52" fill="white">
-      <!-- Domo taxi -->
+    <!-- TAXI -->
+    <svg class="s" height="50" viewBox="0 0 150 50" fill="white">
       <rect x="58" y="2" width="30" height="8" rx="3" fill="white" opacity=".5"/>
-      <!-- Techo y carrocería -->
       <path d="M12 38 L22 16 Q30 8 46 8 L100 8 Q116 8 124 16 L138 38 Z"/>
-      <!-- Parabrisas delantero -->
       <path d="M108 10 L122 28 L100 28 L100 10 Z" fill="#0D2B4E" opacity=".5"/>
-      <!-- Ventana trasera -->
-      <path d="M44 10 L44 28 L66 28 L58 10 Z" fill="#0D2B4E" opacity=".5"/>
-      <!-- Ventana central -->
+      <path d="M44 10 L44 28 L66 28 L58 10 Z"   fill="#0D2B4E" opacity=".5"/>
       <rect x="68" y="12" width="28" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
-      <!-- Bumpers -->
       <rect x="130" y="36" width="14" height="6" rx="2" fill="white" opacity=".6"/>
-      <rect x="6"   y="36" width="8"  height="6" rx="2" fill="white" opacity=".4"/>
-      <!-- Ruedas -->
-      <circle cx="38"  cy="44" r="8" fill="white"/>
-      <circle cx="38"  cy="44" r="4" fill="#0D2B4E"/>
-      <circle cx="112" cy="44" r="8" fill="white"/>
-      <circle cx="112" cy="44" r="4" fill="#0D2B4E"/>
+      <circle cx="38"  cy="44" r="8" fill="white"/><circle cx="38"  cy="44" r="4" fill="#0D2B4E"/>
+      <circle cx="112" cy="44" r="8" fill="white"/><circle cx="112" cy="44" r="4" fill="#0D2B4E"/>
     </svg>
 
     <!-- AUTOBÚS -->
-    <svg class="silueta" height="62" viewBox="0 0 200 62" fill="white">
-      <!-- Cuerpo principal -->
+    <svg class="s" height="60" viewBox="0 0 200 60" fill="white">
       <rect x="8" y="8" width="184" height="42" rx="6"/>
-      <!-- Parabrisas delantero -->
       <rect x="164" y="12" width="22" height="22" rx="3" fill="#0D2B4E" opacity=".5"/>
-      <!-- Parabrisas trasero -->
-      <rect x="14" y="12" width="20" height="22" rx="3" fill="#0D2B4E" opacity=".5"/>
-      <!-- Ventanas laterales -->
+      <rect x="14"  y="12" width="20" height="22" rx="3" fill="#0D2B4E" opacity=".5"/>
       <rect x="40"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="64"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="88"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="112" y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="136" y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
-      <!-- Puerta -->
-      <rect x="40" y="32" width="16" height="18" rx="1" fill="#0D2B4E" opacity=".4"/>
-      <!-- Línea decorativa lateral -->
-      <rect x="8" y="34" width="184" height="2" fill="#0D2B4E" opacity=".2"/>
-      <!-- Ruedas -->
-      <circle cx="42"  cy="52" r="10" fill="white"/><circle cx="42"  cy="52" r="5" fill="#0D2B4E"/>
-      <circle cx="158" cy="52" r="10" fill="white"/><circle cx="158" cy="52" r="5" fill="#0D2B4E"/>
-      <!-- Faro trasero -->
-      <rect x="8" y="18" width="5" height="10" rx="2" fill="white" opacity=".4"/>
-      <!-- Faro delantero -->
+      <rect x="40"  y="32" width="16" height="18" rx="1" fill="#0D2B4E" opacity=".4"/>
+      <rect x="8"   y="34" width="184" height="2" fill="#0D2B4E" opacity=".2"/>
+      <circle cx="42"  cy="54" r="10" fill="white"/><circle cx="42"  cy="54" r="5" fill="#0D2B4E"/>
+      <circle cx="158" cy="54" r="10" fill="white"/><circle cx="158" cy="54" r="5" fill="#0D2B4E"/>
       <rect x="187" y="18" width="5" height="10" rx="2" fill="white" opacity=".6"/>
     </svg>
 
-    <!-- TRACTOCAMIÓN CAJA CERRADA -->
-    <svg class="silueta" height="66" viewBox="0 0 300 66" fill="white">
+    <!-- TRACTOCAMIÓN CAJA -->
+    <svg class="s" height="64" viewBox="0 0 300 64" fill="white">
       <rect x="75" y="8" width="216" height="40" rx="4"/>
       <rect x="77" y="10" width="212" height="36" rx="3" fill="#0D2B4E" opacity=".28"/>
       <path d="M10 44 L10 20 Q10 10 26 8 L73 8 L73 50 L10 50 Q6 50 6 46 Q6 44 10 44Z"/>
       <rect x="14" y="12" width="30" height="20" rx="2" fill="#0D2B4E" opacity=".5"/>
-      <rect x="4" y="16" width="5" height="9" rx="1" fill="white" opacity=".5"/>
+      <rect x="4"  y="16" width="5"  height="9"  rx="1" fill="white" opacity=".5"/>
       <circle cx="22"  cy="54" r="10" fill="white"/><circle cx="22"  cy="54" r="4.5" fill="#0D2B4E"/>
       <circle cx="52"  cy="54" r="10" fill="white"/><circle cx="52"  cy="54" r="4.5" fill="#0D2B4E"/>
       <circle cx="170" cy="54" r="9"  fill="white"/><circle cx="170" cy="54" r="4"   fill="#0D2B4E"/>
@@ -413,106 +331,85 @@
     </svg>
 
     <!-- DUPLICADO -->
-    <svg class="silueta" height="80" viewBox="0 0 120 80" fill="white">
+    <svg class="s" height="78" viewBox="0 0 120 78" fill="white">
       <ellipse cx="34" cy="22" rx="5" ry="3" class="v1"/>
       <ellipse cx="60" cy="18" rx="6" ry="3" class="v2"/>
       <ellipse cx="85" cy="24" rx="4" ry="2.5" class="v3"/>
-      <rect x="28" y="26" width="12" height="16" rx="1"/>
-      <rect x="54" y="22" width="12" height="20" rx="1"/>
-      <rect x="80" y="28" width="10" height="14" rx="1"/>
-      <rect x="18" y="40" width="84" height="38" rx="2"/>
+      <rect x="28" y="25" width="12" height="16" rx="1"/>
+      <rect x="54" y="21" width="12" height="20" rx="1"/>
+      <rect x="80" y="27" width="10" height="14" rx="1"/>
+      <rect x="18" y="40" width="84" height="36" rx="2"/>
       <rect x="26" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
       <rect x="48" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
       <rect x="70" y="48" width="12" height="12" rx="1" fill="#0D2B4E" opacity=".5"/>
-      <rect x="50" y="62" width="20" height="16" rx="1" fill="#0D2B4E" opacity=".4"/>
+      <rect x="50" y="60" width="20" height="16" rx="1" fill="#0D2B4E" opacity=".4"/>
     </svg>
-
-    <svg class="silueta" height="70" viewBox="0 0 340 70" fill="white">
-      <path d="M10 48 L10 20 Q10 8 28 8 L72 8 L72 54 L10 54 Q6 54 6 50 Q6 48 10 48Z"/>
+    <svg class="s" height="68" viewBox="0 0 340 68" fill="white">
+      <path d="M10 46 L10 18 Q10 8 28 8 L72 8 L72 52 L10 52 Q6 52 6 48 Q6 46 10 46Z"/>
       <rect x="14" y="11" width="32" height="22" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="4" y="16" width="5" height="8" rx="1" fill="white" opacity=".5"/>
-      <rect x="72" y="46" width="258" height="6" rx="2"/>
-      <line x1="110" y1="12" x2="110" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
-      <line x1="170" y1="12" x2="170" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
-      <line x1="230" y1="12" x2="230" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
-      <line x1="290" y1="12" x2="290" y2="46" stroke="white" stroke-width="2" opacity=".6"/>
-      <line x1="110" y1="12" x2="170" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <line x1="170" y1="12" x2="110" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <line x1="170" y1="12" x2="230" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <line x1="230" y1="12" x2="170" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <line x1="230" y1="12" x2="290" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
-      <line x1="290" y1="12" x2="230" y2="46" stroke="white" stroke-width="1.2" opacity=".25"/>
+      <rect x="72" y="44" width="258" height="6" rx="2"/>
+      <line x1="110" y1="12" x2="110" y2="44" stroke="white" stroke-width="2" opacity=".5"/>
+      <line x1="170" y1="12" x2="170" y2="44" stroke="white" stroke-width="2" opacity=".5"/>
+      <line x1="230" y1="12" x2="230" y2="44" stroke="white" stroke-width="2" opacity=".5"/>
+      <line x1="290" y1="12" x2="290" y2="44" stroke="white" stroke-width="2" opacity=".5"/>
+      <line x1="110" y1="12" x2="170" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
+      <line x1="170" y1="12" x2="110" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
+      <line x1="170" y1="12" x2="230" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
+      <line x1="230" y1="12" x2="170" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
+      <line x1="230" y1="12" x2="290" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
+      <line x1="290" y1="12" x2="230" y2="44" stroke="white" stroke-width="1.2" opacity=".2"/>
       <rect x="78" y="10" width="248" height="10" rx="5"/>
       <ellipse cx="78"  cy="15" rx="5" ry="5" fill="white" opacity=".6"/>
-      <ellipse cx="326" cy="15" rx="5" ry="5" fill="white" opacity=".4"/>
+      <ellipse cx="326" cy="15" rx="5" ry="5" fill="white" opacity=".35"/>
       <rect x="78" y="22" width="248" height="10" rx="5"/>
       <ellipse cx="78"  cy="27" rx="5" ry="5" fill="white" opacity=".6"/>
-      <ellipse cx="326" cy="27" rx="5" ry="5" fill="white" opacity=".4"/>
+      <ellipse cx="326" cy="27" rx="5" ry="5" fill="white" opacity=".35"/>
       <rect x="78" y="34" width="248" height="10" rx="5"/>
       <ellipse cx="78"  cy="39" rx="5" ry="5" fill="white" opacity=".6"/>
-      <ellipse cx="326" cy="39" rx="5" ry="5" fill="white" opacity=".4"/>
-      <rect x="80" y="18" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
-      <rect x="80" y="30" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
-      <rect x="80" y="42" width="244" height="2" rx="1" fill="#0D2B4E" opacity=".2"/>
-      <circle cx="22" cy="58" r="10" fill="white"/><circle cx="22" cy="58" r="4.5" fill="#0D2B4E"/>
-      <circle cx="52" cy="58" r="10" fill="white"/><circle cx="52" cy="58" r="4.5" fill="#0D2B4E"/>
-      <circle cx="190" cy="58" r="9" fill="white"/><circle cx="190" cy="58" r="4" fill="#0D2B4E"/>
-      <circle cx="220" cy="58" r="9" fill="white"/><circle cx="220" cy="58" r="4" fill="#0D2B4E"/>
-      <circle cx="265" cy="58" r="9" fill="white"/><circle cx="265" cy="58" r="4" fill="#0D2B4E"/>
-      <circle cx="295" cy="58" r="9" fill="white"/><circle cx="295" cy="58" r="4" fill="#0D2B4E"/>
-      <text x="200" y="40" font-family="Rajdhani,sans-serif" font-size="0" fill="white" opacity="0">GNC</text>
+      <ellipse cx="326" cy="39" rx="5" ry="5" fill="white" opacity=".35"/>
+      <circle cx="22"  cy="56" r="10" fill="white"/><circle cx="22"  cy="56" r="4.5" fill="#0D2B4E"/>
+      <circle cx="52"  cy="56" r="10" fill="white"/><circle cx="52"  cy="56" r="4.5" fill="#0D2B4E"/>
+      <circle cx="190" cy="56" r="9"  fill="white"/><circle cx="190" cy="56" r="4"   fill="#0D2B4E"/>
+      <circle cx="220" cy="56" r="9"  fill="white"/><circle cx="220" cy="56" r="4"   fill="#0D2B4E"/>
+      <circle cx="265" cy="56" r="9"  fill="white"/><circle cx="265" cy="56" r="4"   fill="#0D2B4E"/>
+      <circle cx="295" cy="56" r="9"  fill="white"/><circle cx="295" cy="56" r="4"   fill="#0D2B4E"/>
     </svg>
-
-    <svg class="silueta" height="56" viewBox="0 0 160 56" fill="white">
-      <path d="M8 44 L8 18 Q8 8 18 8 L130 8 Q142 8 148 18 L152 32 L152 44 Z"/>
+    <svg class="s" height="54" viewBox="0 0 160 54" fill="white">
+      <path d="M8 42 L8 18 Q8 8 18 8 L130 8 Q142 8 148 18 L152 32 L152 42 Z"/>
       <path d="M18 10 L18 26 L58 26 L58 10 Z" fill="#0D2B4E" opacity=".5"/>
       <rect x="64"  y="12" width="20" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="90"  y="12" width="20" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="116" y="12" width="14" height="14" rx="2" fill="#0D2B4E" opacity=".5"/>
-      <circle cx="36"  cy="46" r="10" fill="white"/>
-      <circle cx="36"  cy="46" r="5"  fill="#0D2B4E"/>
-      <circle cx="122" cy="46" r="10" fill="white"/>
-      <circle cx="122" cy="46" r="5"  fill="#0D2B4E"/>
-      <rect x="148" y="20" width="6" height="8" rx="2" fill="white" opacity=".4"/>
+      <circle cx="36"  cy="46" r="10" fill="white"/><circle cx="36"  cy="46" r="5"  fill="#0D2B4E"/>
+      <circle cx="122" cy="46" r="10" fill="white"/><circle cx="122" cy="46" r="5"  fill="#0D2B4E"/>
     </svg>
-
-    <svg class="silueta" height="52" viewBox="0 0 150 52" fill="white">
+    <svg class="s" height="50" viewBox="0 0 150 50" fill="white">
       <rect x="58" y="2" width="30" height="8" rx="3" fill="white" opacity=".5"/>
       <path d="M12 38 L22 16 Q30 8 46 8 L100 8 Q116 8 124 16 L138 38 Z"/>
       <path d="M108 10 L122 28 L100 28 L100 10 Z" fill="#0D2B4E" opacity=".5"/>
-      <path d="M44 10 L44 28 L66 28 L58 10 Z" fill="#0D2B4E" opacity=".5"/>
+      <path d="M44 10 L44 28 L66 28 L58 10 Z"   fill="#0D2B4E" opacity=".5"/>
       <rect x="68" y="12" width="28" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
-      <rect x="130" y="36" width="14" height="6" rx="2" fill="white" opacity=".6"/>
-      <rect x="6"   y="36" width="8"  height="6" rx="2" fill="white" opacity=".4"/>
-      <circle cx="38"  cy="44" r="8" fill="white"/>
-      <circle cx="38"  cy="44" r="4" fill="#0D2B4E"/>
-      <circle cx="112" cy="44" r="8" fill="white"/>
-      <circle cx="112" cy="44" r="4" fill="#0D2B4E"/>
+      <circle cx="38"  cy="44" r="8" fill="white"/><circle cx="38"  cy="44" r="4" fill="#0D2B4E"/>
+      <circle cx="112" cy="44" r="8" fill="white"/><circle cx="112" cy="44" r="4" fill="#0D2B4E"/>
     </svg>
-
-    <svg class="silueta" height="62" viewBox="0 0 200 62" fill="white">
+    <svg class="s" height="60" viewBox="0 0 200 60" fill="white">
       <rect x="8" y="8" width="184" height="42" rx="6"/>
       <rect x="164" y="12" width="22" height="22" rx="3" fill="#0D2B4E" opacity=".5"/>
-      <rect x="14" y="12" width="20" height="22" rx="3" fill="#0D2B4E" opacity=".5"/>
+      <rect x="14"  y="12" width="20" height="22" rx="3" fill="#0D2B4E" opacity=".5"/>
       <rect x="40"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="64"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="88"  y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="112" y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
       <rect x="136" y="13" width="18" height="16" rx="2" fill="#0D2B4E" opacity=".5"/>
-      <rect x="40" y="32" width="16" height="18" rx="1" fill="#0D2B4E" opacity=".4"/>
-      <rect x="8" y="34" width="184" height="2" fill="#0D2B4E" opacity=".2"/>
-      <circle cx="42"  cy="52" r="10" fill="white"/><circle cx="42"  cy="52" r="5" fill="#0D2B4E"/>
-      <circle cx="158" cy="52" r="10" fill="white"/><circle cx="158" cy="52" r="5" fill="#0D2B4E"/>
-      <rect x="8" y="18" width="5" height="10" rx="2" fill="white" opacity=".4"/>
-      <rect x="187" y="18" width="5" height="10" rx="2" fill="white" opacity=".6"/>
+      <circle cx="42"  cy="54" r="10" fill="white"/><circle cx="42"  cy="54" r="5" fill="#0D2B4E"/>
+      <circle cx="158" cy="54" r="10" fill="white"/><circle cx="158" cy="54" r="5" fill="#0D2B4E"/>
     </svg>
-
-    <svg class="silueta" height="66" viewBox="0 0 300 66" fill="white">
+    <svg class="s" height="64" viewBox="0 0 300 64" fill="white">
       <rect x="75" y="8" width="216" height="40" rx="4"/>
       <rect x="77" y="10" width="212" height="36" rx="3" fill="#0D2B4E" opacity=".28"/>
       <path d="M10 44 L10 20 Q10 10 26 8 L73 8 L73 50 L10 50 Q6 50 6 46 Q6 44 10 44Z"/>
       <rect x="14" y="12" width="30" height="20" rx="2" fill="#0D2B4E" opacity=".5"/>
-      <rect x="4" y="16" width="5" height="9" rx="1" fill="white" opacity=".5"/>
       <circle cx="22"  cy="54" r="10" fill="white"/><circle cx="22"  cy="54" r="4.5" fill="#0D2B4E"/>
       <circle cx="52"  cy="54" r="10" fill="white"/><circle cx="52"  cy="54" r="4.5" fill="#0D2B4E"/>
       <circle cx="170" cy="54" r="9"  fill="white"/><circle cx="170" cy="54" r="4"   fill="#0D2B4E"/>
@@ -520,12 +417,8 @@
       <circle cx="255" cy="54" r="9"  fill="white"/><circle cx="255" cy="54" r="4"   fill="#0D2B4E"/>
     </svg>
 
-  </div></div>
+  </div>
+</div>
 
 <!-- CORREO -->
-<a class="contacto" href="mailto:contacto@centralgas.com.mx">
-  contacto@centralgas.com.mx
-</a>
-
-</body>
-</html>
+<a class="mail" href="/cdn-cgi/l/email-protection#ddbeb2b3a9bcbea9b29dbeb8b3a9afbcb1babcaef3beb2b0f3b0a5"
