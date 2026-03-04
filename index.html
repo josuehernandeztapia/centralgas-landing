@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central Gas - Suministro de Gas LP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0D0D0D;
+      color: #E0E0E0;
+    }
+    .hero-bg {
+      background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    .btn-primary {
+      background-color: #E63946;
+      color: white;
+      font-weight: bold;
+      padding: 12px 32px;
+      border-radius: 9999px;
+      transition: all 0.3s;
+    }
+    .btn-primary:hover {
+      background-color: #C1121F;
+      transform: scale(1.05);
+    }
+    .card {
+      background-color: #1A1A1A;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+    .card:hover {
+      border-color: #E63946;
+      box-shadow: 0 0 20px rgba(230,57,70,0.15);
+    }
+  </style>
+</head>
+<body>
+  <!-- Nav -->
+  <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-black text-white">CENTRAL <span class="text-red-500">GAS</span></h1>
+      <div class="hidden md:flex gap-8">
+        <a href="#servicios" class="text-gray-300 hover:text-white transition">Servicios</a>
+        <a href="#nosotros" class="text-gray-300 hover:text-white transition">Nosotros</a>
+        <a href="#contacto" class="text-gray-300 hover:text-white transition">Contacto</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero-bg min-h-screen flex items-center justify-center text-center px-6">
+    <div>
+      <p class="text-sm tracking-widest text-gray-400 uppercase mb-4">Suministro confiable</p>
+      <h2 class="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter leading-none mb-6">Gas LP<br>para tu hogar<br>y negocio</h2>
+      <p class="text-lg text-gray-300 max-w-xl mx-auto mb-8">Servicio de suministro de Gas LP con la mejor calidad, seguridad y precio en Aguascalientes.</p>
+      <a href="#contacto" class="btn-primary inline-block">Solicitar Servicio</a>
+    </div>
+  </section>
+
+  <!-- Servicios -->
+  <section id="servicios" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <h3 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tight text-center mb-16">Nuestros Servicios</h3>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="card text-center">
+          <div class="text-4xl mb-4">&#9981;</div>
+          <h4 class="text-xl font-bold text-white mb-3">Gas LP Residencial</h4>
+          <p class="text-gray-400">Suministro seguro y puntual para tu hogar con los mejores precios del mercado.</p>
+        </div>
+        <div class="card text-center">
+          <div class="text-4xl mb-4">&#127981;</div>
+          <h4 class="text-xl font-bold text-white mb-3">Gas LP Comercial</h4>
+          <p class="text-gray-400">Soluciones de gas para restaurantes, hoteles y negocios con servicio continuo.</p>
+        </div>
+        <div class="card text-center">
+          <div class="text-4xl mb-4">&#128736;</div>
+          <h4 class="text-xl font-bold text-white mb-3">Mantenimiento</h4>
+          <p class="text-gray-400">Revision y mantenimiento de instalaciones de gas para garantizar tu seguridad.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nosotros -->
+  <section id="nosotros" class="py-24 px-6 bg-black/50">
+    <div class="max-w-4xl mx-auto text-center">
+      <h3 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tight mb-8">Nosotros</h3>
+      <p class="text-lg text-gray-300 leading-relaxed">Central Gas es una empresa comprometida con el suministro seguro y eficiente de Gas LP en Aguascalientes. Con anos de experiencia en el sector energetico, ofrecemos un servicio confiable, precios competitivos y atencion personalizada para hogares y negocios.</p>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto" class="py-24 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <h3 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tight mb-8">Contacto</h3>
+      <p class="text-gray-300 text-lg mb-8">Estamos para servirte. Contactanos para solicitar servicio o resolver tus dudas.</p>
+      <div class="grid md:grid-cols-2 gap-8 text-left">
+        <div class="card">
+          <h4 class="text-xl font-bold text-white mb-4">Informacion</h4>
+          <p class="text-gray-400 mb-2"><strong class="text-white">Email:</strong> contacto@centralgas.com.mx</p>
+          <p class="text-gray-400 mb-2"><strong class="text-white">Telefono:</strong> (449) 000-0000</p>
+          <p class="text-gray-400"><strong class="text-white">Ubicacion:</strong> Aguascalientes, Ags. Mexico</p>
+        </div>
+        <div class="card">
+          <h4 class="text-xl font-bold text-white mb-4">Horario</h4>
+          <p class="text-gray-400 mb-2"><strong class="text-white">Lunes - Viernes:</strong> 8:00 AM - 6:00 PM</p>
+          <p class="text-gray-400 mb-2"><strong class="text-white">Sabado:</strong> 8:00 AM - 2:00 PM</p>
+          <p class="text-gray-400"><strong class="text-white">Domingo:</strong> Cerrado</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8 px-6">
+    <div class="max-w-6xl mx-auto text-center text-gray-500">
+      <p>&copy; 2026 Central Gas. Todos los derechos reservados.</p>
+      <p class="mt-2 text-sm">centralgas.com.mx</p>
+    </div>
+  </footer>
+</body>
+</html>
